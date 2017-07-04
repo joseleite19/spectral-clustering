@@ -1,4 +1,13 @@
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+
+#include <cstdio>
+#include <vector>
+#include <fstream>
+#include <set>
+#include <utility>
+#include <list>
+#include <cmath>
+#include <cassert>
 
 #define ff first
 #define ss second
@@ -7,8 +16,8 @@ using namespace std;
 
 inline double sq(double x){ return x * x; }
 
-const double sigma = 0.728;
-const int k = 3;
+double sigma = 0.728;
+int k = 3;
 const double eps = 1e-9;
 
 vector<int> randompermutation(int size){
@@ -38,22 +47,28 @@ class Point{
 public:
     vector<double> c;
     Point(): c(k, 0) {}
+    Point(const vector<double> d): c(d) {}
+    Point(int sz) : c(sz, 0) {}
     double &operator[](int i){ return c[i]; }
+    double at(int i) const{ return c[i]; }
+    inline size_t size() const{ return c.size(); }
 
-    /* data */
-};
+    void operator+=(const Point &p){
+        for(int i = 0; i < c.size(); i++)
+            c[i] += p.at(i);
+    }
 
-class paciente{
-public:
-    vector<double> att;
-    paciente(vector<double> d): att(d){}
-    paciente(): att(20, 0.0) {}
-    
-    double operator-(const paciente &o){
+    void operator/=(double p){
+        for(int i = 0; i < c.size(); i++)
+            c[i] /= p;
+    }
+
+    double dist(const Point &p) const{
         double ans = 0;
-        for(int i = 0; i < att.size(); i++)
-            ans += sq(att[i] - o.att[i]);
-        return ans;
+        for(int i = 0; i < max(c.size(), p.size()); i++)
+            ans += sq(c[i] - p.at(i));
+        
+        return sqrt(ans);
     }
 };
 
@@ -88,34 +103,35 @@ public:
         return ret;
     }
 
-    pair<double, vector<double> > power(){
-        double k;
+    pair<double, vector<double> > power(){ // return o par <autovalor, autovetor>
         vector<double> b(n);
         for(int i = 0; i < n; i++)
-            b[i] = rand()%100;
-        k = b[0];
-        double y;
-        matrix c(n, 1);
+            b[i] = rand() % 100;
+        
+        double k = b[0], y;
+        vector<double> c(n);
 
         do{
             y = k;
             for(int i = 0; i < n; i++){
-                c[i][0] = 0;
-                for(int j = 0;j < n;j++)
-                    c[i][0] = c[i][0] + mat[i][j] * b[j];
+                c[i] = 0;
+                for(int j = 0; j < n; j++)
+                    c[i] += mat[i][j] * b[j];
             }
 
-            k = fabs(c[0][0]);
+            k = fabs(c[0]);
 
             for(int i = 1; i < n; i++)
-                k = fabs(c[i][0]) > k ? fabs(c[i][0]) : k;
+                k = max(fabs(c[i]), k);
+
             for(int i = 0; i < n; i++)
-                b[i] = c[i][0]/k;
-        }while(fabs(k-y) > eps);
+                b[i] = c[i] / k;
+        }while(fabs(k - y) > eps);
+        
         return make_pair(k, b);
     }
 
-    matrix autovetores(){
+    matrix autovetores() const{
         matrix ans(n, k);
         matrix M = *this;
         for(int j = 0; j < k; j++){
@@ -132,13 +148,18 @@ public:
     vector<int> kmeans(){
         vector<int> ret(n, -1);
 
-        pair<set<int>, Point > cluster[k];
+        vector<pair<set<int>, Point>> cluster(k);
+        vector<Point> P(n);
+        
+        for(int i = 0; i < n; i++)
+            P[i] = Point(mat[i]);
 
         {
             int i = 0;
-            for(int x : randompermutation(k)){
+            for(int x : randompermutation(n)){
+                if(i == k) break;
                 cluster[i].ff.insert(x);
-                cluster[i].ss.c = mat[x];
+                cluster[i].ss = Point(mat[x]);
                 i++;
             }
         }
@@ -151,15 +172,12 @@ public:
             //calcula novo cluster para cada ponto
             for(int i = 0; i < n; i++){
                 int nid = -1;
-                double mx = 1e20;
+                double mn = 1e50;
 
                 // calcula cluster mais perto
                 for(int j = 0; j < k; j++){
-                    double sum = 0;
-                    for(int q = 0; q < k; q++)
-                        sum += sq(mat[i][q] - cluster[j].ss[q]);
-                    sum = sqrt(sum);
-                    if(sum < mx) mx = sum, nid = j;
+                    double d = P[i].dist(cluster[j].ss);
+                    if(d < mn) mn = d, nid = j;
                 }
 
                 if(ret[i] != nid){
@@ -174,13 +192,9 @@ public:
             for(int i = 0; i < k; i++){
                 if(!cluster[i].ff.size()) continue;
                 Point p;
-                for(int x : cluster[i].ff){
-                    for(int j = 0; j < k; j++){
-                        p[j] += mat[i][j];
-                    }
-                }
-                for(int j = 0; j < k; j++)
-                    p[j] /= cluster[i].ff.size();
+                for(int x : cluster[i].ff)
+                    p += P[x];
+                p /= cluster[i].ff.size();
                 cluster[i].ss = p;
             }
         }
@@ -189,28 +203,56 @@ public:
 
 };
 
-void normalize(vector<paciente> &v){
-    paciente mx = v[0], mn = v[0];
+void normalize(vector<Point> &v){
+    Point mx = v[0], mn = v[0];
 
     for(int i = 0; i < v.size(); i++){
-        for(int j = 1; j < 20; j++){
-            mn.att[j] = min(mn.att[j], v[i].att[j]);
-            mx.att[j] = max(mx.att[j], v[i].att[j]);
+        for(int j = 1; j < v[i].size(); j++){
+            mn[j] = min(mn[j], v[i][j]);
+            mx[j] = max(mx[j], v[i][j]);
         }
     }
 
     for(int i = 0; i < v.size(); i++){
-        for(int j = 1; j < 20; j++){
-            double den = mx.att[j] - mn.att[j];
-            if(den) v[i].att[j] = (v[i].att[j] - mn.att[j]) / den;
-            else v[i].att[j] = 0;
+        for(int j = 1; j < v[i].size(); j++){
+            double den = mx[j] - mn[j];
+            if(den) v[i][j] = (v[i][j] - mn[j]) / den;
+            else v[i][j] = 0;
         }
     }
 }
 
+void pretty_print(const Point &p){
+    printf("Class: %lf\n", p.at(0));
+    printf("Age: %.2lf\n", p.at(1));
+    printf("Sex: %.2lf\n", p.at(2));
+    printf("Steroid: %.2lf\n", p.at(3));
+    printf("Antivirals: %.2lf\n", p.at(4));
+    printf("Fatigue: %.2lf\n", p.at(5));
+    printf("Malaise: %.2lf\n", p.at(6));
+    printf("Anorexia: %.2lf\n", p.at(7));
+    printf("Liver big: %.2lf\n", p.at(8));
+    printf("Liver firm: %.2lf\n", p.at(9));
+    printf("Spleen palpable: %.2lf\n", p.at(10));
+    printf("Spiders: %.2lf\n", p.at(11));
+    printf("Ascites: %.2lf\n", p.at(12));
+    printf("Varices: %.2lf\n", p.at(13));
+    printf("Bilirubim: %.2lf\n", p.at(14));
+    printf("Alk Phosphate: %.2lf\n", p.at(15));
+    printf("Sgot: %.2lf\n", p.at(16));
+    printf("Albumin: %.2lf\n", p.at(17));
+    printf("Protime: %.2lf\n", p.at(18));
+    printf("Hitology: %.2lf\n", p.at(19));
+}
 
-int main(){
-    vector<paciente> v;
+int main(int argc, char **argv){
+
+    if(argc == 3){
+        k = atoi(argv[1]);
+        sigma = atof(argv[2]);
+    }
+
+    vector<Point> v, original;
 
     ifstream in("hepatitis.data");
 
@@ -226,10 +268,12 @@ int main(){
         vector<double> d;
         for(int i = 0; i < ret.size(); i++)
             d.push_back(stod(ret[i]));
-
-        v.push_back(paciente(d));
+        
+        v.emplace_back(d);
     }
     in.close();
+
+    original = v;
 
     normalize(v);
 
@@ -237,7 +281,7 @@ int main(){
 
     for(int i = 0; i < v.size(); i++)
         for(int j = 0; j < v.size(); j++)
-            A[i][j] = exp(-(v[i]-v[j])/(2*sq(sigma)));
+            A[i][j] = exp(-sq(v[i].dist(v[j]))/(2*sq(sigma)));
 
     for(int i = 0; i < A.n; i++){
         double sum = 0;
@@ -251,12 +295,9 @@ int main(){
     matrix Y(X.n, X.m);
     
     for(int i = 0; i < X.n; i++){
-        double sum = 0;
-        for(int j = 0; j < X.m; j++)
-            sum += sq(X[i][j]);
-        sum = sqrt(sum);
+        double sum = Point(X[i]).dist(vector<double>{0,0});
 
-        if(sum < 1e-9) continue;
+        if(sum < eps) continue;
         for(int j = 0; j < X.m; j++)
             Y[i][j] = X[i][j] / sum;
     }
@@ -266,4 +307,18 @@ int main(){
     for(int i = 0; i < ret.size(); i++)
         printf("%d %d\n", i, ret[i]);
 
+    vector<vector<int>> cluster(k);
+    for(int i = 0; i < ret.size(); i++){
+        cluster[ ret[i] ].push_back(i);
+    }
+
+    for(int i = 0; i < k; i++){
+        Point p(original.back().size());
+        for(int x : cluster[i])
+            p += original[x];
+        if(cluster[i].size()) p /= cluster[i].size();
+        printf("Cluster %d:\n", i);
+        pretty_print(p);
+        printf("\n");
+    }
 }

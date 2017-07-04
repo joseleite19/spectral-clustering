@@ -1,0 +1,168 @@
+0 1
+1 3
+2 3
+3 3
+4 2
+5 3
+6 3
+7 0
+8 3
+9 3
+10 3
+11 1
+12 1
+13 3
+14 3
+15 3
+16 3
+17 3
+18 3
+19 3
+20 3
+21 0
+22 3
+23 0
+24 3
+25 3
+26 1
+27 2
+28 3
+29 2
+30 3
+31 1
+32 3
+33 0
+34 0
+35 3
+36 1
+37 1
+38 3
+39 3
+40 2
+41 0
+42 3
+43 3
+44 3
+45 1
+46 0
+47 3
+48 3
+49 3
+50 3
+51 3
+52 3
+53 3
+54 3
+55 3
+56 3
+57 3
+58 3
+59 3
+60 3
+61 3
+62 0
+63 3
+64 3
+65 3
+66 3
+67 3
+68 3
+69 2
+70 3
+71 3
+72 3
+73 3
+74 3
+75 2
+76 3
+77 3
+78 3
+79 3
+Cluster 0:
+Class: 2.000000
+Age: 36.75
+Sex: 1.00
+Steroid: 1.75
+Antivirals: 1.88
+Fatigue: 1.62
+Malaise: 2.00
+Anorexia: 2.00
+Liver big: 2.00
+Liver firm: 2.00
+Spleen palpable: 2.00
+Spiders: 2.00
+Ascites: 2.00
+Varices: 2.00
+Bilirubim: 0.84
+Alk Phosphate: 71.38
+Sgot: 48.88
+Albumin: 4.05
+Protime: 75.00
+Hitology: 1.25
+
+Cluster 1:
+Class: 2.000000
+Age: 36.12
+Sex: 1.00
+Steroid: 2.00
+Antivirals: 2.00
+Fatigue: 2.00
+Malaise: 2.00
+Anorexia: 2.00
+Liver big: 2.00
+Liver firm: 2.00
+Spleen palpable: 2.00
+Spiders: 2.00
+Ascites: 2.00
+Varices: 2.00
+Bilirubim: 0.81
+Alk Phosphate: 73.25
+Sgot: 86.50
+Albumin: 4.28
+Protime: 80.25
+Hitology: 1.00
+
+Cluster 2:
+Class: 2.000000
+Age: 45.00
+Sex: 1.00
+Steroid: 1.67
+Antivirals: 1.83
+Fatigue: 1.50
+Malaise: 1.83
+Anorexia: 2.00
+Liver big: 2.00
+Liver firm: 1.83
+Spleen palpable: 1.83
+Spiders: 2.00
+Ascites: 2.00
+Varices: 2.00
+Bilirubim: 1.13
+Alk Phosphate: 81.00
+Sgot: 53.83
+Albumin: 4.28
+Protime: 69.00
+Hitology: 1.33
+
+Cluster 3:
+Class: 1.775862
+Age: 41.38
+Sex: 1.19
+Steroid: 1.41
+Antivirals: 1.67
+Fatigue: 1.21
+Malaise: 1.48
+Anorexia: 1.79
+Liver big: 1.78
+Liver firm: 1.36
+Spleen palpable: 1.76
+Spiders: 1.57
+Ascites: 1.79
+Varices: 1.83
+Bilirubim: 1.34
+Alk Phosphate: 113.62
+Sgot: 88.90
+Albumin: 3.71
+Protime: 57.67
+Hitology: 1.50
+
