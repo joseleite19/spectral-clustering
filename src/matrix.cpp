@@ -50,11 +50,12 @@ int matrix::cols() const{ return m; };
 pair<double, vector<double> > matrix::power(){ // return o par <autovalor, autovetor>
     vector<double> b(n);
     for(int i = 0; i < n; i++)
-        b[i] = rand() % 100;
+        b[i] = rand() % 100+1;
     
     double k = b[0], y;
     vector<double> c(n);
 
+    int it = 1;
     do{
         y = k;
         for(int i = 0; i < n; i++){
@@ -70,7 +71,7 @@ pair<double, vector<double> > matrix::power(){ // return o par <autovalor, autov
 
         for(int i = 0; i < n; i++)
             b[i] = c[i] / k;
-    }while(fabs(k - y) > eps);
+    }while(it++ < 1000 && fabs(k - y) > eps);
     
     return make_pair(k, b);
 }
@@ -137,7 +138,7 @@ vector<int> matrix::kmeans(int k){
             Point p(k);
             for(int x : cluster[i].ff)
                 p += P[x];
-            p /= cluster[i].ff.size();
+            if(cluster[i].ff.size()) p /= cluster[i].ff.size();
             cluster[i].ss = p;
         }
     }

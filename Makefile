@@ -1,5 +1,5 @@
 EXE     = a.out
-LIBS    = -O3
+LIBS    = #-O3
 
 CXX     = g++ -std=c++11
 SRC     = src

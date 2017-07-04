@@ -1,13 +1,12 @@
-//#include <bits/stdc++.h>
-
 #include <cstdio>
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <algorithm>
 #include "point.hpp"
 #include "helper.hpp"
 #include "matrix.hpp"
-#include <algorithm>
+
 using namespace std;
 
 void normalize(vector<Point> &v){
@@ -43,10 +42,12 @@ vector<int> clustering(vector<Point> v, int k, double sigma){
         double sum = 0;
         for(int j = 0; j < n; j++)
             sum += A[i][j];
-        D[i][i] = sqrt(sum);
+        D[i][i] = 1/sqrt(sum);
     }
 
-    L = D - A; // A é simétrico, D é diagonal => L é simetrica :D
+    // L = D - A; // A é simétrico, D é diagonal => L é simetrica :D
+    L = D * A * D;
+
     matrix X = L.autovetores(k);
     matrix Y(n, k);
     
