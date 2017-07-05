@@ -35,8 +35,8 @@ vector<int> clustering(vector<Point> v, int k, double sigma){
     matrix A(n, n), D(n, n), L(n, n);
 
     for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
-            A[i][j] = exp(-sq(v[i].dist(v[j]))/(2*sq(sigma)));
+        for(int j = i+1; j < n; j++)
+            A[i][j] = A[j][i] = exp(-sq(v[i].dist(v[j]))/(2*sq(sigma)));
 
     for(int i = 0; i < n; i++){
         double sum = 0;

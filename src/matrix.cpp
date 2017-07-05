@@ -51,7 +51,7 @@ pair<double, vector<double> > matrix::power(){ // return o par <autovalor, autov
     vector<double> b(n);
     for(int i = 0; i < n; i++)
         b[i] = rand() % 100+1;
-    
+ 
     double k = b[0], y;
     vector<double> c(n);
 
@@ -72,7 +72,7 @@ pair<double, vector<double> > matrix::power(){ // return o par <autovalor, autov
         for(int i = 0; i < n; i++)
             b[i] = c[i] / k;
     }while(it++ < 1000 && fabs(k - y) > eps);
-    
+
     return make_pair(k, b);
 }
 
