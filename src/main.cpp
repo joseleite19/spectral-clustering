@@ -125,7 +125,8 @@ int main(int argc, char **argv){
 
     vector<vector<int>> cluster(k);
     for(int i = 0; i < ret.size(); i++)
-        cluster[ ret[i] ].push_back(i);
+        if(ret[i] >= 0)
+            cluster[ ret[i] ].push_back(i);
 
     for(int i = 0; i < k; i++){
         Point p(v.back().size());
